@@ -25,7 +25,7 @@ jobs:
       matrix:
         config:
         - {
-            name: "Windows Latest MSVC", artifact: "Windows-MSVC.7z",
+            name: "Windows Latest MSVC", artifact: "Windows-MSVC.zip",
             os: windows-2019,
             cc: "cl", cxx: "cl",
             environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat",
@@ -60,8 +60,9 @@ jobs:
       
     - name: Check out the latest tag
       run: |
-        $latest_tag = git describe --tags $(git rev-list --tags --max-count=1)
-        git checkout $latest_tag
+        $TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
+        git checkout $TAG
+        echo $TAG >> $GITHUB_ENV        
 
     - name: Download Ninja, CMake, and CCache
       run: cmake -P .github/scripts/download-ninja-cmake.cmake
@@ -83,21 +84,47 @@ jobs:
     - name: Run tests
       run: cmake -P .github/scripts/test.cmake
 
-    - name: Archive build artifacts
+    
+    - name: Compress build artifacts as zip
+      run: |
+        mkdir -p artifacts
+        mkdir share\gromacs
+        mv share\template share\gromacs
+        mv share\top share\gromacs
+        rm share\CMakeLists.txt
+        rm share\README*
+
+        Compress-Archive -Path .\build\bin\ -DestinationPath .\artifacts\${{ env.TAG }} -Force
+        Compress-Archive -Path .\build\lib\ -DestinationPath .\artifacts\${{ env.TAG }} -Update
+        Compress-Archive -Path .\build\share\ -DestinationPath .\artifacts\${{ env.TAG }} -Update
+        
+    - name: Save build artifacts
       uses: actions/upload-artifact@v2
       with:
         name: gromacs-windows-exe
-        path: build/bin/*.exe
+        path: artifacts\${{ env.TAG }}.zip
 
-    - name: Create release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        body: |
-          Changes in this release:
-          - Added support for Windows
-        draft: false
-        prerelease: false
+  # create-release:
+  #   name: Create release
+  #   runs-on: ubuntu-latest
+
+
+
+    # - name: Archive build artifacts
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: gromacs-windows-exe
+    #     path: build/bin/*.exe
+
+    # - name: Create release
+    #   uses: actions/create-release@v1
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #   with:
+    #     tag_name: ${{ github.ref }}
+    #     release_name: Release ${{ github.ref }}
+    #     body: |
+    #       Changes in this release:
+    #       - Added support for Windows
+    #     draft: false
+    #     prerelease: false
