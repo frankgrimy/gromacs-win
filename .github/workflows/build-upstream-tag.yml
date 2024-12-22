@@ -113,14 +113,35 @@ on:
 
 jobs:
   sync-and-build:
-    runs-on: windows-2019
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+        - {
+            name: "Windows Latest MSVC", artifact: "Windows-MSVC.7z",
+            os: windows-2019,
+            cc: "cl", cxx: "cl",
+            environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat",
+            gpu_var: "Off",
+            openmp_var: "Off"
+          }
+
+    env:
+      CC: ${{ matrix.config.cc }}
+      CXX: ${{ matrix.config.cxx }}
+      CI_JOB_ID: ${{ github.sha }} # Tell CMake it's running in CI
+      OPENMP_VAR: ${{ matrix.config.openmp_var }}
+      GPU_VAR: ${{ matrix.config.gpu_var }}
+      ENVIRONMENT_SCRIPT: ${{ matrix.config.environment_script }}
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
-      
+    
     - name: Set up Git
       run: |
         git remote add upstream https://github.com/gromacs/gromacs.git
@@ -131,12 +152,12 @@ jobs:
         git checkout main
         git pull upstream main
         git push origin main
-
+      
     - name: Check out the latest tag
       run: |
         $latest_tag = git describe --tags $(git rev-list --tags --max-count=1)
         git checkout $latest_tag
-      
+
     - name: Download Ninja, CMake, and CCache
       run: cmake -P .github/scripts/download-ninja-cmake.cmake
 
@@ -144,9 +165,9 @@ jobs:
       uses: actions/cache@v4
       with:
         path: .ccache
-        key: ${{ github.sha }}
+        key: ${{ matrix.config.name }}-ccache-${{ github.sha }}
         restore-keys: |
-          ${{ github.sha }}
+          ${{ matrix.config.name }}-ccache-
 
     - name: Configure
       run: cmake -P .github/scripts/configure.cmake
@@ -156,3 +177,48 @@ jobs:
 
     - name: Run tests
       run: cmake -P .github/scripts/test.cmake
+
+
+    # runs-on: windows-2019
+
+    # steps:
+    # - name: Checkout repository
+    #   uses: actions/checkout@v2
+    #   with:
+    #     fetch-depth: 0
+      
+    # - name: Set up Git
+    #   run: |
+    #     git remote add upstream https://github.com/gromacs/gromacs.git
+    #     git fetch upstream --tags
+
+    # - name: Sync with upstream
+    #   run: |
+    #     git checkout main
+    #     git pull upstream main
+    #     git push origin main
+
+    # - name: Check out the latest tag
+    #   run: |
+    #     $latest_tag = git describe --tags $(git rev-list --tags --max-count=1)
+    #     git checkout $latest_tag
+      
+    # - name: Download Ninja, CMake, and CCache
+    #   run: cmake -P .github/scripts/download-ninja-cmake.cmake
+
+    # - name: ccache cache files
+    #   uses: actions/cache@v4
+    #   with:
+    #     path: .ccache
+    #     key: ${{ github.sha }}
+    #     restore-keys: |
+    #       ${{ github.sha }}
+
+    # - name: Configure
+    #   run: cmake -P .github/scripts/configure.cmake
+
+    # - name: Build
+    #   run: cmake -P .github/scripts/build.cmake
+
+    # - name: Run tests
+    #   run: cmake -P .github/scripts/test.cmake
