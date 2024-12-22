@@ -88,21 +88,26 @@ jobs:
     - name: Compress build artifacts as zip
       run: |
         mkdir -p artifacts
+        ls .\
+        ls .\build
+        ls .\build\bin
+        ls .\build\lib
+        ls .\share
         mkdir share\gromacs
         mv share\template share\gromacs
         mv share\top share\gromacs
         rm share\CMakeLists.txt
         rm share\README*
 
-        Compress-Archive -Path .\build\bin\ -DestinationPath .\artifacts\${{ env.TAG }} -Force
-        Compress-Archive -Path .\build\lib\ -DestinationPath .\artifacts\${{ env.TAG }} -Update
-        Compress-Archive -Path .\build\share\ -DestinationPath .\artifacts\${{ env.TAG }} -Update
+        Compress-Archive -Path .\build\bin\ -DestinationPath .\artifacts\gromacs-win-${{ env.TAG }} -Force
+        Compress-Archive -Path .\build\lib\ -DestinationPath .\artifacts\gromacs-win-${{ env.TAG }} -Update
+        Compress-Archive -Path .\build\share\ -DestinationPath .\artifacts\gromacs-win-${{ env.TAG }} -Update
         
     - name: Save build artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: gromacs-windows-exe
-        path: artifacts\${{ env.TAG }}.zip
+        name: Gromacs Windows ${{ env.TAG }}
+        path: artifacts\gromacs-win-${{ env.TAG }}.zip
 
   # create-release:
   #   name: Create release
