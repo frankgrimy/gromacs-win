@@ -62,7 +62,7 @@ jobs:
       run: |
         $TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
         git checkout $TAG
-        echo $TAG >> $GITHUB_ENV        
+        echo "TAG=$TAG" >> $GITHUB_ENV        
 
     - name: Download Ninja, CMake, and CCache
       run: cmake -P .github/scripts/download-ninja-cmake.cmake
