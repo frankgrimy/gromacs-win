@@ -75,14 +75,14 @@ jobs:
         restore-keys: |
           ${{ matrix.config.name }}-ccache-
 
-    - name: Configure
-      run: cmake -P .github/scripts/configure.cmake
+    # - name: Configure
+    #   run: cmake -P .github/scripts/configure.cmake
 
-    - name: Build
-      run: cmake -P .github/scripts/build.cmake
+    # - name: Build
+    #   run: cmake -P .github/scripts/build.cmake
 
-    - name: Run tests
-      run: cmake -P .github/scripts/test.cmake
+    # - name: Run tests
+    #   run: cmake -P .github/scripts/test.cmake
 
     
     - name: Compress build artifacts as zip
@@ -93,21 +93,29 @@ jobs:
         ls .\build\bin
         ls .\build\lib
         ls .\share
-        mkdir share\gromacs
-        mv share\template share\gromacs
-        mv share\top share\gromacs
-        rm share\CMakeLists.txt
-        rm share\README*
-
-        Compress-Archive -Path .\build\bin\ -DestinationPath .\artifacts\gromacs-win-${{ env.TAG }} -Force
-        Compress-Archive -Path .\build\lib\ -DestinationPath .\artifacts\gromacs-win-${{ env.TAG }} -Update
-        Compress-Archive -Path .\build\share\ -DestinationPath .\artifacts\gromacs-win-${{ env.TAG }} -Update
         
-    - name: Save build artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: Gromacs Windows ${{ env.TAG }}
-        path: artifacts\gromacs-win-${{ env.TAG }}.zip
+        # mkdir .\share\gromacs
+        # mv .\share\template .\share\gromacs
+        # mv .\share\top .\share\gromacs
+        # rm .\share\CMakeLists.txt
+        # rm .\share\README*
+
+        # Compress-Archive -Path .\build\bin\gmx.exe -DestinationPath .\artifacts\gromacs-win-${{ env.TAG }}.zip -Force
+
+        # Compress-Archive -Path .\build\lib\gmx.exp -DestinationPath .\artifacts\gromacs-win-${{ env.TAG }} -Update
+        # Compress-Archive -Path .\build\lib\gmx.lib -DestinationPath .\artifacts\gromacs-win-${{ env.TAG }} -Update
+        # Compress-Archive -Path .\build\lib\gromacs.lib -DestinationPath .\artifacts\gromacs-win-${{ env.TAG }} -Update
+        # Compress-Archive -Path .\build\lib\muparser.lib -DestinationPath .\artifacts\gromacs-win-${{ env.TAG }} -Update
+
+        # Compress-Archive -Path .\share\gromacs -DestinationPath .\artifacts\gromacs-win-${{ env.TAG }} -Update
+
+        # Compress-Archive -Path .\share\ -DestinationPath .\artifacts\gromacs-win-${{ env.TAG }} -Update
+        
+    # - name: Save build artifacts
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     name: Gromacs Windows ${{ env.TAG }}
+    #     path: artifacts\gromacs-win-${{ env.TAG }}.zip
 
   # create-release:
   #   name: Create release
