@@ -16,27 +16,17 @@ on:
 jobs:
   sync-and-build:
     name: ${{ matrix.config.name }}
-    #runs-on: ${{ matrix.config.os }}
-    runs-on: self-hosted
+    runs-on: ${{ matrix.config.os }}
     strategy:
       fail-fast: false
       matrix:
         config:
-        # - {
-        #     name: "Windows Latest MSVC", artifact: "Windows-MSVC.zip",
-        #     os: windows-2019,
-        #     cc: "cl", cxx: "cl",
-        #     environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat",
-        #     gpu_var: "CUDA",
-        #     openmp_var: "Off"
-        #   }
         - {
-            name: "Windows Latest MSVC/CUDA", artifact: "Windows-MSVC-CUDA.zip",
+            name: "Windows Latest MSVC", artifact: "Windows-MSVC.zip",
             os: windows-2019,
             cc: "cl", cxx: "cl",
-            #environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat",
-            environment_script: "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Auxiliary/Build/vcvars64.bat",
-            gpu_var: "CUDA",
+            environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat",
+            gpu_var: "Off",
             openmp_var: "Off"
           }
 
@@ -70,11 +60,6 @@ jobs:
         $TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
         git checkout $TAG
         echo "TAG=$TAG" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-
-    # - name: Verify if the tag already exists in the fork
-    #   env:
-    #     TAG: ${{ env.TAG }}
-    #   run: |
         
     - name: Download Ninja, CMake, and CCache
       run: cmake -P .github/scripts/download-ninja-cmake.cmake
@@ -129,12 +114,12 @@ jobs:
         name: gromacs-win-${{ env.TAG }}
         path: artifacts
 
-    # - name: Create release
-    #   uses: softprops/action-gh-release@v2  
-    #   with:
-    #     tag_name: ${{ env.TAG }}
-    #     name: ${{ env.TAG }}
-    #     files: | 
-    #       ./artifacts/gromacs-win-${{ env.TAG }}.zip
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Create release
+      uses: softprops/action-gh-release@v2  
+      with:
+        tag_name: ${{ env.TAG }}
+        name: ${{ env.TAG }}
+        files: | 
+          ./artifacts/gromacs-win-${{ env.TAG }}.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
