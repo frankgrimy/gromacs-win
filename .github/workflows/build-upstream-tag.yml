@@ -64,16 +64,16 @@ jobs:
         git checkout $TAG
         echo "TAG=$TAG" >> $GITHUB_ENV        
 
-    - name: Download Ninja, CMake, and CCache
-      run: cmake -P .github/scripts/download-ninja-cmake.cmake
+    # - name: Download Ninja, CMake, and CCache
+    #   run: cmake -P .github/scripts/download-ninja-cmake.cmake
 
-    - name: ccache cache files
-      uses: actions/cache@v4
-      with:
-        path: .ccache
-        key: ${{ matrix.config.name }}-ccache-${{ github.sha }}
-        restore-keys: |
-          ${{ matrix.config.name }}-ccache-
+    # - name: ccache cache files
+    #   uses: actions/cache@v4
+    #   with:
+    #     path: .ccache
+    #     key: ${{ matrix.config.name }}-ccache-${{ github.sha }}
+    #     restore-keys: |
+    #       ${{ matrix.config.name }}-ccache-
 
     # - name: Configure
     #   run: cmake -P .github/scripts/configure.cmake
@@ -89,9 +89,9 @@ jobs:
       run: |
         mkdir -p artifacts
         ls .\
-        ls .\build
-        ls .\build\bin
-        ls .\build\lib
+        # ls .\build
+        # ls .\build\bin
+        # ls .\build\lib
         ls .\share
         
         # mkdir .\share\gromacs
