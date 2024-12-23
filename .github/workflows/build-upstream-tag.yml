@@ -65,25 +65,25 @@ jobs:
         echo "TAG=$TAG" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 #        echo "TAG=$TAG" >> $GITHUB_ENV        
 
-    # - name: Download Ninja, CMake, and CCache
-    #   run: cmake -P .github/scripts/download-ninja-cmake.cmake
+    - name: Download Ninja, CMake, and CCache
+      run: cmake -P .github/scripts/download-ninja-cmake.cmake
 
-    # - name: ccache cache files
-    #   uses: actions/cache@v4
-    #   with:
-    #     path: .ccache
-    #     key: ${{ matrix.config.name }}-ccache-${{ github.sha }}
-    #     restore-keys: |
-    #       ${{ matrix.config.name }}-ccache-
+    - name: ccache cache files
+      uses: actions/cache@v4
+      with:
+        path: .ccache
+        key: ${{ matrix.config.name }}-ccache-${{ github.sha }}
+        restore-keys: |
+          ${{ matrix.config.name }}-ccache-
 
-    # - name: Configure
-    #   run: cmake -P .github/scripts/configure.cmake
+    - name: Configure
+      run: cmake -P .github/scripts/configure.cmake
 
-    # - name: Build
-    #   run: cmake -P .github/scripts/build.cmake
+    - name: Build
+      run: cmake -P .github/scripts/build.cmake
 
-    # - name: Run tests
-    #   run: cmake -P .github/scripts/test.cmake
+    - name: Run tests
+      run: cmake -P .github/scripts/test.cmake
 
     
     - name: Compress build artifacts as zip
