@@ -110,14 +110,19 @@ jobs:
         name: gromacs-win-${{ env.TAG }}
         path: artifacts
 
+    - name: Check the files in the artifacts
+      run: |
+        ls .\artifacts
+        ls .\artifacts\gromacs-win-$env:TAG
+
     - name: Create release
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@v2  
       with:
         tag_name: ${{ env.TAG }}
-        name: GROMACS ${{ env.TAG }}
+        name: ${{ env.TAG }}
         files: | 
-          .\artifacts\gromacs-win-${{ env.TAG }}.zip
-          .\gromacs-win-${{ env.TAG }}.zip
+          ./artifacts/gromacs-win-${{ env.TAG }}.zip
+          ./gromacs-win-${{ env.TAG }}.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
