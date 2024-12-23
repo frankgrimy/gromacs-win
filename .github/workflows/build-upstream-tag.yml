@@ -101,24 +101,24 @@ jobs:
         mv .\share\top .\share\gromacs
         rm .\share\CMakeLists.txt
         rm .\share\README*
+        
+        Compress-Archive -Path .\share -DestinationPath .\artifacts\gromacs-win-$env:TAG.zip -Force
+        Compress-Archive -Path .\build\bin\gmx.exe -DestinationPath .\artifacts\gromacs-win-$env:TAG.zip -Update
 
-        # Compress-Archive -Path .\build\bin\gmx.exe -DestinationPath .\artifacts\gromacs-win-${{ env.TAG }}.zip -Force
-
-        # Compress-Archive -Path .\build\lib\gmx.exp -DestinationPath .\artifacts\gromacs-win-${{ env.TAG }} -Update
-        # Compress-Archive -Path .\build\lib\gmx.lib -DestinationPath .\artifacts\gromacs-win-${{ env.TAG }} -Update
-        # Compress-Archive -Path .\build\lib\gromacs.lib -DestinationPath .\artifacts\gromacs-win-${{ env.TAG }} -Update
-        # Compress-Archive -Path .\build\lib\muparser.lib -DestinationPath .\artifacts\gromacs-win-${{ env.TAG }} -Update
+        Compress-Archive -Path .\build\lib\gmx.exp -DestinationPath .\artifacts\gromacs-win-$env:TAG.zip -Update
+        Compress-Archive -Path .\build\lib\gmx.lib -DestinationPath .\artifacts\gromacs-win-$env:TAG.zip -Update
+        Compress-Archive -Path .\build\lib\gromacs.lib -DestinationPath .\artifacts\gromacs-win-$env:TAG.zip -Update
+        Compress-Archive -Path .\build\lib\muparser.lib -DestinationPath .\artifacts\gromacs-win-$env:TAG.zip -Update
 
         # Compress-Archive -Path .\share\gromacs -DestinationPath .\artifacts\gromacs-win-${{ env.TAG }} -Update
-
         # Compress-Archive -Path .\share\ -DestinationPath .\artifacts\gromacs-win-${{ env.TAG }} -Update
-        Compress-Archive -Path .\share -DestinationPath .\artifacts\gromacs-win-$env:TAG.zip -Force
+
         ls .\artifacts
         
     - name: Save build artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: Gromacs Windows ${{ env.TAG }}
+        name: gromacs-win-${{ env.TAG }}
         path: artifacts\gromacs-win-${{ env.TAG }}.zip
 
   # create-release:
