@@ -16,27 +16,28 @@ on:
 jobs:
   sync-and-build:
     name: ${{ matrix.config.name }}
-    runs-on: ${{ matrix.config.os }}
+    #runs-on: ${{ matrix.config.os }}
+    runs-on: self-hosted
     strategy:
       fail-fast: false
       matrix:
         config:
-        - {
-            name: "Windows Latest MSVC", artifact: "Windows-MSVC.zip",
-            os: windows-2019,
-            cc: "cl", cxx: "cl",
-            environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat",
-            gpu_var: "CUDA",
-            openmp_var: "Off"
-          }
         # - {
-        #     name: "Windows Latest MSVC/CUDA", artifact: "Windows-MSVC-CUDA.zip",
+        #     name: "Windows Latest MSVC", artifact: "Windows-MSVC.zip",
         #     os: windows-2019,
         #     cc: "cl", cxx: "cl",
         #     environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat",
         #     gpu_var: "CUDA",
         #     openmp_var: "Off"
         #   }
+        - {
+            name: "Windows Latest MSVC/CUDA", artifact: "Windows-MSVC-CUDA.zip",
+            os: windows-2019,
+            cc: "cl", cxx: "cl",
+            environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat",
+            gpu_var: "CUDA",
+            openmp_var: "Off"
+          }
 
     env:
       CC: ${{ matrix.config.cc }}
