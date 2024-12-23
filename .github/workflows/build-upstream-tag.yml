@@ -87,6 +87,7 @@ jobs:
     
     - name: Compress build artifacts as zip
       run: |
+        echo $TAG
         mkdir -p artifacts
         ls .\
         # ls .\build
@@ -94,11 +95,11 @@ jobs:
         # ls .\build\lib
         ls .\share
         
-        # mkdir .\share\gromacs
-        # mv .\share\template .\share\gromacs
-        # mv .\share\top .\share\gromacs
-        # rm .\share\CMakeLists.txt
-        # rm .\share\README*
+        mkdir .\share\gromacs
+        mv .\share\template .\share\gromacs
+        mv .\share\top .\share\gromacs
+        rm .\share\CMakeLists.txt
+        rm .\share\README*
 
         # Compress-Archive -Path .\build\bin\gmx.exe -DestinationPath .\artifacts\gromacs-win-${{ env.TAG }}.zip -Force
 
@@ -110,6 +111,7 @@ jobs:
         # Compress-Archive -Path .\share\gromacs -DestinationPath .\artifacts\gromacs-win-${{ env.TAG }} -Update
 
         # Compress-Archive -Path .\share\ -DestinationPath .\artifacts\gromacs-win-${{ env.TAG }} -Update
+        Compress-Archive -Path .\share -DestinationPath .\artifacts\gromacs-win-${{ env.TAG }} -Update
         
     # - name: Save build artifacts
     #   uses: actions/upload-artifact@v4
