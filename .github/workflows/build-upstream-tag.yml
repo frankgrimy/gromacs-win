@@ -102,9 +102,6 @@ jobs:
         mv .\share\template .\artifacts\gromacs-win-$env:TAG\share\gromacs
         mv .\share\top .\artifacts\gromacs-win-$env:TAG\share\gromacs
 
-        ls .\
-        ls .\artifacts
-
         mv .\build\bin\gmx.exe .\artifacts\gromacs-win-$env:TAG\bin
         mv .\fftw-$env:FFTW_VERSION\libfftw3f-3.dll .\artifacts\gromacs-win-$env:TAG\bin
         
@@ -115,7 +112,6 @@ jobs:
 
         Compress-Archive -Path .\artifacts\gromacs-win-$env:TAG -DestinationPath .\artifacts\gromacs-win-$env:TAG.zip
 
-        
     - name: Save build artifacts
       uses: actions/upload-artifact@v4
       with:
@@ -136,33 +132,3 @@ jobs:
           ./artifacts/gromacs-win-${{ env.TAG }}.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
-
-
-
-
-  # create-release:
-  #   name: Create release
-  #   runs-on: ubuntu-latest
-
-
-
-    # - name: Archive build artifacts
-    #   uses: actions/upload-artifact@v2
-    #   with:
-    #     name: gromacs-windows-exe
-    #     path: build/bin/*.exe
-
-    # - name: Create release
-    #   uses: actions/create-release@v1
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   with:
-    #     tag_name: ${{ github.ref }}
-    #     release_name: Release ${{ github.ref }}
-    #     body: |
-    #       Changes in this release:
-    #       - Added support for Windows
-    #     draft: false
-    #     prerelease: false
