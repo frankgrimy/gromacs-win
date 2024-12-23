@@ -75,7 +75,7 @@ jobs:
     - name: Set up CUDA Toolkit
       uses: Jimver/cuda-toolkit@v0.2.19
       with:
-        cuda: '12.6.3'
+        #cuda: '12.6.3'
         method: 'network'
         sub-packages: '["nvcc"]'
       
