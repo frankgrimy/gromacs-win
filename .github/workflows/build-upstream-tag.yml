@@ -94,6 +94,9 @@ jobs:
         mv .\share\template .\artifacts\gromacs-win-$env:TAG\share\gromacs
         mv .\share\top .\artifacts\gromacs-win-$env:TAG\share\gromacs
 
+        ls .\
+        ls .\artifacts
+
         # mv .\build\bin\gmx.exe .\artifacts\gromacs-win-$env:TAG\bin
         # mv .\build\lib\gmx.exp .\artifacts\gromacs-win-$env:TAG\lib
         # mv .\build\lib\gmx.lib .\artifacts\gromacs-win-$env:TAG\lib
