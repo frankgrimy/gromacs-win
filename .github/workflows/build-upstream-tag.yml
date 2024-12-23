@@ -42,27 +42,27 @@ jobs:
       ENVIRONMENT_SCRIPT: ${{ matrix.config.environment_script }}
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
+    # - name: Checkout repository
+    #   uses: actions/checkout@v2
+    #   with:
+    #     fetch-depth: 0
     
-    - name: Set up Git
-      run: |
-        git remote add upstream https://github.com/gromacs/gromacs.git
-        git fetch upstream --tags
+    # - name: Set up Git
+    #   run: |
+    #     git remote add upstream https://github.com/gromacs/gromacs.git
+    #     git fetch upstream --tags
 
-    - name: Sync with upstream
-      run: |
-        git checkout main
-        git pull upstream main
-        git push origin main
+    # - name: Sync with upstream
+    #   run: |
+    #     git checkout main
+    #     git pull upstream main
+    #     git push origin main
       
-    - name: Check out the latest tag
-      run: |
-        $TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
-        git checkout $TAG
-        echo "TAG=$TAG" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+    # - name: Check out the latest tag
+    #   run: |
+    #     $TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
+    #     git checkout $TAG
+    #     echo "TAG=$TAG" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
     # - name: Download Ninja, CMake, and CCache
     #   run: cmake -P .github/scripts/download-ninja-cmake.cmake
@@ -88,47 +88,48 @@ jobs:
       run: |
         $FFTW_VERSION="3.3.5"
         echo "FFTW_VERSION=$FFTW_VERSION" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-        $FFTW_URL=https://fftw.org/pub/fftw/fftw-$FFTW_VERSION-dll64.zip
-        curl $FFTW_URL -o fftw-$FFTW_VERSION-dll64.zip
+        #$FFTW_URL=https://fftw.org/pub/fftw/fftw-$FFTW_VERSION-dll64.zip
+        #curl $FFTW_URL -o fftw-$FFTW_VERSION-dll64.zip
+        curl https://fftw.org/pub/fftw/fftw-$FFTW_VERSION-dll64.zip -o fftw-$FFTW_VERSION-dll64.zip
         Expand-Archive -Path fftw-$FFTW_VERSION-dll64.zip -DestinationPath .\fftw-$FFTW_VERSION
 
     
-    - name: Move built files and dependencies to artifacts
-      run: |
-        mkdir -p artifacts\gromacs-win-$env:TAG\share\gromacs
-        mkdir artifacts\gromacs-win-$env:TAG\bin
-        mkdir artifacts\gromacs-win-$env:TAG\lib
+    # - name: Move built files and dependencies to artifacts
+    #   run: |
+    #     mkdir -p artifacts\gromacs-win-$env:TAG\share\gromacs
+    #     mkdir artifacts\gromacs-win-$env:TAG\bin
+    #     mkdir artifacts\gromacs-win-$env:TAG\lib
 
-        mv .\share\template .\artifacts\gromacs-win-$env:TAG\share\gromacs
-        mv .\share\top .\artifacts\gromacs-win-$env:TAG\share\gromacs
+    #     mv .\share\template .\artifacts\gromacs-win-$env:TAG\share\gromacs
+    #     mv .\share\top .\artifacts\gromacs-win-$env:TAG\share\gromacs
 
-        mv .\fftw-$env:FFTW_VERSION\libfftw3f-3.dll .\artifacts\gromacs-win-$env:TAG\bin
-        # mv .\build\bin\gmx.exe .\artifacts\gromacs-win-$env:TAG\bin
+    #     mv .\fftw-$env:FFTW_VERSION\libfftw3f-3.dll .\artifacts\gromacs-win-$env:TAG\bin
+    #     # mv .\build\bin\gmx.exe .\artifacts\gromacs-win-$env:TAG\bin
         
-        # mv .\build\lib\gmx.exp .\artifacts\gromacs-win-$env:TAG\lib
-        # mv .\build\lib\gmx.lib .\artifacts\gromacs-win-$env:TAG\lib
-        # mv .\build\lib\gromacs.lib .\artifacts\gromacs-win-$env:TAG\lib
-        # mv .\build\lib\muparser.lib .\artifacts\gromacs-win-$env:TAG\lib
+    #     # mv .\build\lib\gmx.exp .\artifacts\gromacs-win-$env:TAG\lib
+    #     # mv .\build\lib\gmx.lib .\artifacts\gromacs-win-$env:TAG\lib
+    #     # mv .\build\lib\gromacs.lib .\artifacts\gromacs-win-$env:TAG\lib
+    #     # mv .\build\lib\muparser.lib .\artifacts\gromacs-win-$env:TAG\lib
 
-        Compress-Archive -Path .\artifacts\gromacs-win-$env:TAG -DestinationPath .\artifacts\gromacs-win-$env:TAG.zip
+    #     Compress-Archive -Path .\artifacts\gromacs-win-$env:TAG -DestinationPath .\artifacts\gromacs-win-$env:TAG.zip
 
-    - name: Save build artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: gromacs-win-${{ env.TAG }}
-        path: artifacts
+    # - name: Save build artifacts
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     name: gromacs-win-${{ env.TAG }}
+    #     path: artifacts
 
-    - name: Check the files in the artifacts
-      run: |
-        ls .\artifacts
-        ls .\artifacts\gromacs-win-$env:TAG
+    # - name: Check the files in the artifacts
+    #   run: |
+    #     ls .\artifacts
+    #     ls .\artifacts\gromacs-win-$env:TAG
 
-    - name: Create release
-      uses: softprops/action-gh-release@v2  
-      with:
-        tag_name: ${{ env.TAG }}
-        name: ${{ env.TAG }}
-        files: | 
-          ./artifacts/gromacs-win-${{ env.TAG }}.zip
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    # - name: Create release
+    #   uses: softprops/action-gh-release@v2  
+    #   with:
+    #     tag_name: ${{ env.TAG }}
+    #     name: ${{ env.TAG }}
+    #     files: | 
+    #       ./artifacts/gromacs-win-${{ env.TAG }}.zip
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
