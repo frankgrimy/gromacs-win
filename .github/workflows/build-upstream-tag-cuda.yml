@@ -65,7 +65,7 @@ jobs:
       uses: Jimver/cuda-toolkit@v0.2.19
       with:
         method: 'network'
-        sub-packages: '["nvcc", "cudart"]'
+        sub-packages: '["nvcc", "cudart", "cufft"]'
       
     - run: nvcc -V
 
