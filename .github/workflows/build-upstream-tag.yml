@@ -106,19 +106,15 @@ jobs:
       with:
         name: gromacs-win-${{ env.TAG }}
         path: artifacts
-      
+
     - name: Create release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v2
       with:
         tag_name: ${{ env.TAG }}
-        release_name: Release ${{ env.TAG }}
-        body: |
-          Changes in this release:
-          - Added support for Windows
-        draft: false
-        prerelease: false
+        name: GROMACS ${{ env.TAG }} (Windows)
+        files: artifacts/gromacs-win-${{ env.TAG }}.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
 
