@@ -115,7 +115,9 @@ jobs:
       with:
         tag_name: ${{ env.TAG }}
         name: GROMACS ${{ env.TAG }}
-        files: .\artifacts\gromacs-win-${{ env.TAG }}.zip
+        files: | 
+          .\artifacts\gromacs-win-${{ env.TAG }}.zip
+          .\gromacs-win-${{ env.TAG }}.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
