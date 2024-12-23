@@ -86,9 +86,8 @@ jobs:
     #   run: cmake -P .github/scripts/test.cmake
 
     
-    - name: Compress build artifacts as zip
+    - name: Move built files and dependencies to artifacts
       run: |
-        echo $TAG
         mkdir -p artifacts\gromacs-win-$env:TAG
 
         mv .\share\template .\artifacts\gromacs-win-$env:TAG\share\gromacs
