@@ -66,6 +66,7 @@ jobs:
       with:
         method: 'network'
         sub-packages: '["nvcc", "cudart", "cufft"]'
+        non-cuda-sub-packages: '["libcublas", "libcufft"]'
       
     - run: nvcc -V
 
