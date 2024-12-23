@@ -16,8 +16,7 @@ on:
 jobs:
   sync-and-build:
     name: ${{ matrix.config.name }}
-    #runs-on: ${{ matrix.config.os }}
-    runs-on: self-hosted
+    runs-on: ${{ matrix.config.os }}
     strategy:
       fail-fast: false
       matrix:
