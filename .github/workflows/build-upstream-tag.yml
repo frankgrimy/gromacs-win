@@ -103,6 +103,8 @@ jobs:
         # mv .\build\lib\gromacs.lib .\artifacts\gromacs-win-$env:TAG\lib
         # mv .\build\lib\muparser.lib .\artifacts\gromacs-win-$env:TAG\lib
 
+        Compress-Archive -Path .\artifacts\gromacs-win-$env:TAG -DestinationPath .\artifacts\gromacs-win-$env:TAG.zip
+
         
     - name: Save build artifacts
       uses: actions/upload-artifact@v4
@@ -121,8 +123,7 @@ jobs:
         tag_name: ${{ env.TAG }}
         name: ${{ env.TAG }}
         files: | 
-          ./artifacts/gromacs-win-${{ env.TAG }}
-          ./gromacs-win-${{ env.TAG }}
+          ./artifacts/gromacs-win-${{ env.TAG }}.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
