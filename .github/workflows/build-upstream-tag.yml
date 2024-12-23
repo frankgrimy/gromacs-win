@@ -12,9 +12,7 @@ on:
   schedule:
     - cron: '0 0 * * 0' # Run every Sunday at midnight
   workflow_dispatch:
-  # push:
-  #   tags:
-  #     - 'v*' # Match any tag starting with 'v'
+
 
 jobs:
   sync-and-build:
@@ -42,27 +40,47 @@ jobs:
       ENVIRONMENT_SCRIPT: ${{ matrix.config.environment_script }}
 
     steps:
-    # - name: Checkout repository
-    #   uses: actions/checkout@v2
-    #   with:
-    #     fetch-depth: 0
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
     
-    # - name: Set up Git
-    #   run: |
-    #     git remote add upstream https://github.com/gromacs/gromacs.git
-    #     git fetch upstream --tags
+    - name: Set up Git
+      run: |
+        git remote add upstream https://github.com/gromacs/gromacs.git
+        git fetch upstream --tags
 
-    # - name: Sync with upstream
-    #   run: |
-    #     git checkout main
-    #     git pull upstream main
-    #     git push origin main
+    - name: Sync with upstream
+      run: |
+        git checkout main
+        git pull upstream main
+        git push origin main
       
-    # - name: Check out the latest tag
-    #   run: |
-    #     $TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
-    #     git checkout $TAG
-    #     echo "TAG=$TAG" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+    - name: Check out the latest tag
+      run: |
+        $TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
+        git checkout $TAG
+        echo "TAG=$TAG" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+    - name: Verify if the tag already exists in the fork
+      env:
+        TAG: ${{ env.TAG }}
+      run: |
+        |
+        try {
+          $latest_tag_upstream = git describe --tags $(git rev-list --tags --max-count=1)
+          $latest_tag_fork = git describe --tags $(git rev-list --tags --max-count=1 origin)
+
+          if ($latest_tag_upstream -gt $latest_tag_fork) {
+            echo "Newer tag found in upstream: $latest_tag_upstream"
+          } else {
+            echo "No newer tag found in upstream."
+            exit 0
+          }
+        } catch {
+          echo "No tags found in the fork repository."
+          exit 0
+        }
 
     # - name: Download Ninja, CMake, and CCache
     #   run: cmake -P .github/scripts/download-ninja-cmake.cmake
@@ -84,13 +102,13 @@ jobs:
     # - name: Run tests
     #   run: cmake -P .github/scripts/test.cmake
 
-    - name: Download FFTW
-      run: |
-        $FFTW_VERSION="3.3.5"
-        echo "FFTW_VERSION=$FFTW_VERSION" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-        #$FFTW_URL=https://fftw.org/pub/fftw/fftw-$FFTW_VERSION-dll64.zip
-        curl https://fftw.org/pub/fftw/fftw-$FFTW_VERSION-dll64.zip -o fftw-$FFTW_VERSION-dll64.zip
-        Expand-Archive -Path fftw-$FFTW_VERSION-dll64.zip -DestinationPath .\fftw-$FFTW_VERSION
+    # - name: Download FFTW
+    #   run: |
+    #     $FFTW_VERSION="3.3.5"
+    #     echo "FFTW_VERSION=$FFTW_VERSION" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+    #     #$FFTW_URL=https://fftw.org/pub/fftw/fftw-$FFTW_VERSION-dll64.zip
+    #     curl https://fftw.org/pub/fftw/fftw-$FFTW_VERSION-dll64.zip -o fftw-$FFTW_VERSION-dll64.zip
+    #     Expand-Archive -Path fftw-$FFTW_VERSION-dll64.zip -DestinationPath .\fftw-$FFTW_VERSION
 
     
     # - name: Move built files and dependencies to artifacts
