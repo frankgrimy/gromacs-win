@@ -89,6 +89,13 @@ jobs:
         curl https://fftw.org/pub/fftw/fftw-$FFTW_VERSION-dll64.zip -o fftw-$FFTW_VERSION-dll64.zip
         Expand-Archive -Path fftw-$FFTW_VERSION-dll64.zip -DestinationPath .\fftw-$FFTW_VERSION
 
+    - name: Add .bat file to start GROMACS
+      run: |
+        echo '@set CUR_DIR=%CD%' > start-gromacs.bat
+        echo '@set "PATH=%CUR_DIR%\bin;%PATH%"' >> start-gromacs.bat
+        echo '@set GMXDATA=%CUR_DIR%\share\gromacs' >> start-gromacs.bat
+        echo '@cmd' >> start-gromacs.bat
+
     - name: Move built files and dependencies to artifacts
       run: |
         mkdir -p artifacts\gromacs-win-$env:TAG\share\gromacs
@@ -105,6 +112,8 @@ jobs:
         mv .\build\lib\gmx.lib .\artifacts\gromacs-win-$env:TAG\lib
         mv .\build\lib\gromacs.lib .\artifacts\gromacs-win-$env:TAG\lib
         mv .\build\lib\muparser.lib .\artifacts\gromacs-win-$env:TAG\lib
+
+        mv .\start-gromacs.bat .\artifacts\gromacs-win-$env:TAG
 
         Compress-Archive -Path .\artifacts\gromacs-win-$env:TAG -DestinationPath .\artifacts\gromacs-win-$env:TAG.zip
 
